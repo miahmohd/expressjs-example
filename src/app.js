@@ -25,9 +25,9 @@ app.use(cors())
 
 app.post('/orders', async (req, res) => {
   console.log(req.body);
-  const newOrder = await createOrder(req.body);
-  console.log(newOrder);
-  res.json(newOrder);
+  // const newOrder = await createOrder(req.body);
+  // console.log(newOrder);
+  res.json("newOrder");
 })
 
 
