@@ -34,12 +34,14 @@ const getCollection = async () => {
 }
 
 const getOrderList = async () => {
-    return await getCollection().find({}).toArray()
+    const collection = await getCollection();
+    return collection.find({}).toArray()
 }
 
 const createOrder = async (order) => {
 
-    return await getCollection().insert(
+    const collection = await getCollection();
+    return collection.insert(
         {
             ...order,
             createdAt: Date.now(),
@@ -51,7 +53,8 @@ const createOrder = async (order) => {
 
 
 const payOrder = async (id) => {
-    return await getCollection().updateOne({
+    const collection = await getCollection();
+    return collection.updateOne({
         _id: id
     }, {
         $set: { status: "PAID" }
@@ -59,7 +62,8 @@ const payOrder = async (id) => {
 }
 
 const getOrderStatus = async (id) => {
-    const orders = await getCollection().find({
+    const collection = await getCollection();
+    const orders = collection.find({
         _id: id
     }).toArray()
     if (orders.length == 0) {
@@ -70,7 +74,8 @@ const getOrderStatus = async (id) => {
 
 
 const deleteOrder = async (id) => {
-    return await getCollection().updateOne({
+    const collection = await getCollection();
+    return collection.updateOne({
         _id: id
     }, {
         $set: { status: "DELETED" }
@@ -79,7 +84,8 @@ const deleteOrder = async (id) => {
 
 const changeOrder = async (id, order) => {
 
-    return await getCollection().updateOne({
+    const collection = await getCollection();
+    return collection.updateOne({
         _id: id
     }, {
         $set: {

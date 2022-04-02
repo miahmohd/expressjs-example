@@ -21,13 +21,14 @@ const port = 3000
 // cancellare l'ordine m
 
 app.use(express.json())
-app.use(cors())
+app.use(cors(
+  { origin: "https://web.postman.co" }
+))
 
 app.post('/orders', async (req, res) => {
   console.log(req.body);
-  // const newOrder = await createOrder(req.body);
-  // console.log(newOrder);
-  res.json("newOrder");
+  const newOrder = await createOrder(req.body);
+  res.json(newOrder);
 })
 
 
