@@ -31,6 +31,11 @@ app.post('/orders', async (req, res) => {
   res.json(newOrder);
 })
 
+app.get("/orders", async (req, res) => {
+  const orders = await getOrderList();
+  res.json(orders);
+})
+
 
 
 
