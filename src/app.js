@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const {
   changeOrder,
   deleteOrder,
@@ -20,12 +21,13 @@ const port = 3000
 // cancellare l'ordine m
 
 app.use(express.json())
+app.use(cors())
 
 app.post('/orders', async (req, res) => {
   console.log(req.body);
-  // const newOrder = await createOrder();
-  // console.log(newOrder);
-  res.json("newOrder");
+  const newOrder = await createOrder(req.body);
+  console.log(newOrder);
+  res.json(newOrder);
 })
 
 
