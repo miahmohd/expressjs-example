@@ -34,13 +34,13 @@ const getCollection = async () => {
 }
 
 const getOrderList = async () => {
-    const collection = await getCollection();
+    const collection = await getCollection()
     return collection.find({}).toArray()
 }
 
 const createOrder = async (order) => {
 
-    const collection = await getCollection();
+    const collection = await getCollection()
     return collection.insert(
         {
             ...order,
@@ -53,7 +53,7 @@ const createOrder = async (order) => {
 
 
 const payOrder = async (id) => {
-    const collection = await getCollection();
+    const collection = await getCollection()
     return collection.updateOne({
         _id: id
     }, {
@@ -62,7 +62,7 @@ const payOrder = async (id) => {
 }
 
 const getOrderStatus = async (id) => {
-    const collection = await getCollection();
+    const collection = await getCollection()
     const orders = collection.find({
         _id: id
     }).toArray()
@@ -74,7 +74,7 @@ const getOrderStatus = async (id) => {
 
 
 const deleteOrder = async (id) => {
-    const collection = await getCollection();
+    const collection = await getCollection()
     return collection.updateOne({
         _id: id
     }, {
@@ -84,7 +84,7 @@ const deleteOrder = async (id) => {
 
 const changeOrder = async (id, order) => {
 
-    const collection = await getCollection();
+    const collection = await getCollection()
     return collection.updateOne({
         _id: id
     }, {
