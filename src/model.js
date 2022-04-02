@@ -1,12 +1,18 @@
 const { MongoClient } = require("mongodb")
 
+const priceTable = {
+    "latte": 1,
+    "caffe": 1.2,
+    "acqua": 0.5,
+}
+
 // {
 //     _id,
 //     createdAt: Date,
 //     item: String ("Latte","Caffè","..."),
 //     price: Number,
 //     qty: Number,
-//     status: String ( "created" | "paid" | "canc")
+//     status: String ( "CREATED" | "PAID" | "DELETED")
 // }
 
 
@@ -28,21 +34,51 @@ const getCollection = async () => {
 }
 
 const getOrderList = async () => {
-    return await collection.find({}).toArray()
+    return await getCollection().find({}).toArray()
 }
 
 const createOrder = async (order) => {
-    return await collection.insert(order)
+
+    return await getCollection().insert(
+        {
+            ...order,
+            createdAt: Date.now(),
+            status: "CREATED",
+            price: priceTable[order.item] * order.qty
+        }
+    )
 }
 
 
 const payOrder = async (id) => {
-    return await collection.updateOne({
+    return await getCollection().updateOne({
         _id: id
     }, {
         $set: { status: "PAID" }
     })
 }
+
+const getOrderStatus = async (id) => {
+    const orders = await getCollection().find({
+        _id: id
+    }).toArray()
+    if (orders.length == 0) {
+        return null;
+    }
+    return orders[0].status
+}
+
+
+const deleteOrder = async (id) => {
+    return await getCollection().updateOne({
+        _id: id
+    }, {
+        $set: { status: "DELETED" }
+    })
+}
+
+const changeOrder
+
 
 
 
@@ -50,11 +86,3 @@ module.exports = {
     getClient
 }
 
-// const ordine = {
-//     _id
-//     createdAt: Date,
-//     item: String ("caffe", "latte" ...)
-//     price: Number,
-//     qty: Number
-//     state: string ("created" | "payed" | "canceled")
-// }

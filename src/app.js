@@ -5,12 +5,12 @@ const app = express()
 const port = 3000
 
 // Api:
-// creare un ordine
-// pagare l'ordine
-// lista degli ordini
+// creare un ordine m
+// pagare l'ordine m
+// lista degli ordini m
 // modificare l'ordine
-// stato dell'ordine
-// cancellare l'ordine
+// stato dell'ordine m
+// cancellare l'ordine m
 
 // get /user?id=8
 app.get('/', (req, res) => {
