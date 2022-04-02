@@ -95,6 +95,11 @@ const changeOrder = async (id, order) => {
 
 
 module.exports = {
-    getClient
+    getOrderList,
+    createOrder,
+    payOrder,
+    getOrderStatus,
+    deleteOrder,
+    changeOrder
 }
 

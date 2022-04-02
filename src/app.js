@@ -1,5 +1,12 @@
 const express = require('express');
-const { Db } = require('mongodb');
+const {
+  changeOrder,
+  deleteOrder,
+  createOrder,
+  getOrderList,
+  getOrderStatus,
+  payOrder
+} = require('./model.js')
 
 const app = express()
 const port = 3000
@@ -12,12 +19,13 @@ const port = 3000
 // stato dell'ordine m
 // cancellare l'ordine m
 
-app.get('/', (req, res) => {
-  // leggere req tirare fuori le info che vi servon
-  const userId = req.query.id;
+app.use(express.json())
 
-  // create l'obj res e lo inviate
-  res.json("");
+app.post('/orders', async (req, res) => {
+  console.log(req.body);
+  // const newOrder = await createOrder();
+  // console.log(newOrder);
+  res.json("newOrder");
 })
 
 
