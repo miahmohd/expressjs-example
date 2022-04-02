@@ -77,7 +77,19 @@ const deleteOrder = async (id) => {
     })
 }
 
-const changeOrder
+const changeOrder = async (id, order) => {
+
+    return await getCollection().updateOne({
+        _id: id
+    }, {
+        $set: {
+            item: order.item,
+            qty: order.qty,
+            createdAt: Date.now(),
+            price: priceTable[order.item] * order.qty
+        }
+    })
+}
 
 
 

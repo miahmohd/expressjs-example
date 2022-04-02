@@ -5,14 +5,13 @@ const app = express()
 const port = 3000
 
 // Api:
-// creare un ordine m
+// creare un ordine m post
 // pagare l'ordine m
 // lista degli ordini m
 // modificare l'ordine
 // stato dell'ordine m
 // cancellare l'ordine m
 
-// get /user?id=8
 app.get('/', (req, res) => {
   // leggere req tirare fuori le info che vi servon
   const userId = req.query.id;
