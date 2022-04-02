@@ -39,7 +39,7 @@ const getOrderList = async () => {
 
 const createOrder = async (order) => {
 
-    return await getCollection().insert(
+    return await getCollection().insertOne(
         {
             ...order,
             createdAt: Date.now(),
