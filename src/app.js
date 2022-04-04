@@ -37,6 +37,14 @@ app.get("/orders", async (req, res) => {
 })
 
 
+app.delete("/orders/:id", async (req, res) => {
+  console.log(req.params);
+  const id = req.params.id;
+  await deleteOrder(id)
+  res.json(id);
+})
+
+
 
 
 

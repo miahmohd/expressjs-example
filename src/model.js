@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb")
+const { MongoClient, ObjectId } = require("mongodb")
 
 const priceTable = {
     "latte": 1,
@@ -55,7 +55,7 @@ const createOrder = async (order) => {
 const payOrder = async (id) => {
     const collection = await getCollection()
     return collection.updateOne({
-        _id: id
+        _id: new ObjectId(id)
     }, {
         $set: { status: "PAID" }
     })
@@ -76,7 +76,7 @@ const getOrderStatus = async (id) => {
 const deleteOrder = async (id) => {
     const collection = await getCollection()
     return collection.updateOne({
-        _id: id
+        _id: new ObjectId(id)
     }, {
         $set: { status: "DELETED" }
     })
@@ -86,7 +86,7 @@ const changeOrder = async (id, order) => {
 
     const collection = await getCollection()
     return collection.updateOne({
-        _id: id
+        _id: new ObjectId(id)
     }, {
         $set: {
             item: order.item,
