@@ -59,6 +59,12 @@ app.get("/orders/:id", async (req, res) => {
 })
 
 
+app.put("/orders/:id", async (req, res) => {
+  const id = req.params.id;
+  const body = req.body;
+  let result = await changeOrder(id, body);
+  res.json(result)
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
