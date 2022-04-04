@@ -33,15 +33,21 @@ const getCollection = async () => {
     return collection;
 }
 
-const getOrderList = async () => {
+const getOrderList = async (status) => {
     const collection = await getCollection()
-    return collection.find({}).toArray()
+    if (status == null) {
+        return collection.find({}).toArray()
+    } else {
+        return collection.find({
+            status: status
+        }).toArray()
+    }
 }
 
 const createOrder = async (order) => {
 
     const collection = await getCollection()
-    return collection.insert(
+    return collection.insertOne(
         {
             ...order,
             createdAt: Date.now(),
@@ -87,19 +93,31 @@ const deleteOrder = async (id) => {
     })
 }
 
-const changeOrder = async (id, order) => {
+const changeOrder = async (id, newOrder) => {
 
     const collection = await getCollection()
-    return collection.updateOne({
-        _id: new ObjectId(id)
-    }, {
-        $set: {
-            item: order.item,
-            qty: order.qty,
-            createdAt: Date.now(),
-            price: priceTable[order.item] * order.qty
-        }
-    })
+
+    const order = await getOrder(id);
+    if (order == null) {
+        return [null, 404];
+    }
+
+    if (order.status == "CREATED") {
+        const res = await collection.updateOne({
+            _id: new ObjectId(id)
+        }, {
+            $set: {
+                item: newOrder.item,
+                qty: newOrder.qty,
+                createdAt: Date.now(),
+                price: priceTable[newOrder.item] * newOrder.qty
+            }
+        })
+        return [res, null]
+    }
+
+    return [null, 403];
+
 }
 
 

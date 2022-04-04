@@ -28,11 +28,19 @@ app.use(cors(
 app.post('/orders', async (req, res) => {
   console.log(req.body);
   const newOrder = await createOrder(req.body);
-  res.json(newOrder);
+  console.log(newOrder);
+  res.json({
+    _links: {
+      self: `http://localhost:3000/orders/${newOrder.insertedId}`,
+      pay: `http://localhost:3000/orders/${newOrder.insertedId}/pay`
+    }
+  });
 })
 
+// http://localhost:3000/orders?status=CREATED
 app.get("/orders", async (req, res) => {
-  const orders = await getOrderList();
+  const status = req.query.status;
+  const orders = await getOrderList(status);
   res.json(orders);
 })
 
@@ -62,9 +70,23 @@ app.get("/orders/:id", async (req, res) => {
 app.put("/orders/:id", async (req, res) => {
   const id = req.params.id;
   const body = req.body;
-  let result = await changeOrder(id, body);
-  res.json(result)
+  let [result, err] = await changeOrder(id, body);
+  if (err == 404) {
+    res.status(404).json({ msg: "L'orden non esiste" })
+  } else if (err == 403) {
+    res.status(403).json({ msg: "Non puoi cambiare questo ordine" })
+  } else {
+    res.json(result)
+  }
 })
+
+app.put("/orders/:id/pay", async (req, res) => {
+  console.log(req.params);
+  const id = req.params.id;
+  await payOrder(id)
+  res.json(id);
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
