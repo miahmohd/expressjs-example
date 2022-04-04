@@ -5,7 +5,7 @@ const {
   deleteOrder,
   createOrder,
   getOrderList,
-  getOrderStatus,
+  getOrder,
   payOrder
 } = require('./model.js')
 
@@ -44,7 +44,19 @@ app.delete("/orders/:id", async (req, res) => {
   res.json(id);
 })
 
-
+app.get("/orders/:id", async (req, res) => {
+  const id = req.params.id;
+  let order = await getOrder(id);
+  if (order == null) {
+    // L'ordine non esiste
+    res
+      .status(404)
+      .json({ message: "L'ordine cercato non esiste" })
+  } else {
+    // L'ordine esiste
+    res.json(order);
+  }
+})
 
 
 

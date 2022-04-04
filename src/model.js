@@ -61,15 +61,20 @@ const payOrder = async (id) => {
     })
 }
 
-const getOrderStatus = async (id) => {
-    const collection = await getCollection()
-    const orders = collection.find({
-        _id: id
-    }).toArray()
-    if (orders.length == 0) {
-        return null;
+const getOrder = async (id) => {
+    try {
+        const collection = await getCollection()
+        const orders = await collection.find({
+            _id: new ObjectId(id)
+        }).toArray()
+        if (orders.length == 0) {
+            return null;
+        }
+        return orders[0]
+    } catch {
+        return null
     }
-    return orders[0].status
+
 }
 
 
@@ -104,7 +109,7 @@ module.exports = {
     getOrderList,
     createOrder,
     payOrder,
-    getOrderStatus,
+    getOrder,
     deleteOrder,
     changeOrder
 }
