@@ -97,7 +97,7 @@ app.put("/notes/:id", async (req, res) => {
 
     const notes = await getCollectcion("notes");
 
-    await notes.updateOne(
+    const { matchedCount } = await notes.updateOne(
         {
             _id: new ObjectId(id)
         },
@@ -107,9 +107,11 @@ app.put("/notes/:id", async (req, res) => {
             }
         });
 
+    if (matchedCount == 0) {
+        res.status(404).json({ msg: `Dockumento ${id} non trovato` })
+    }
+
     res.json(newNote)
-
-
 })
 
 
