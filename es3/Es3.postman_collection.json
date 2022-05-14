@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "2bf6f80c-49ec-4fd7-a041-bca1be95dfe3",
+		"name": "Es3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Buckets",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:3000/buckets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"buckets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New obj",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "object",
+							"type": "file",
+							"src": "s5pXSYk4Y/L'organizzazione interna delle imprese.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/buckets/627f5a6540706c7398410b70",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"buckets",
+						"627f5a6540706c7398410b70"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Object",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/buckets/627f5a6540706c7398410b70/OGnbw2Ls8NZrGD",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"buckets",
+						"627f5a6540706c7398410b70",
+						"OGnbw2Ls8NZrGD"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Object modify",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "object",
+							"type": "file",
+							"src": "ojA-IU-FT/Imprese e mercato.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/buckets/627f5a6540706c7398410b70/OGnbw2Ls8NZrGD",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"buckets",
+						"627f5a6540706c7398410b70",
+						"OGnbw2Ls8NZrGD"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
