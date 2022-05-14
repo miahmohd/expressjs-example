@@ -168,6 +168,7 @@ app.get("/users/:userId/notes", async (req, res) => {
 
     const userId = req.params.userId;
     const users = await getCollectcion("users");
+
     const cursor = await users.aggregate([
         {
             $match: {

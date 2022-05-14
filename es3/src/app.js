@@ -6,7 +6,8 @@ const { ObjectId } = require('bson');
 const multer = require('multer')
 const uploadPath = 'es3/uploads/';
 const upload = multer({ dest: uploadPath })
-const fs = require('fs')
+const fs = require('fs');
+const { uuid } = require('./util');
 
 
 const app = express()
@@ -58,6 +59,7 @@ app.post("/buckets", async (req, res) => {
 
 app.post("/buckets/:id", upload.single("object"), async (req, res) => {
     const bucketId = req.params.id;
+    const objectId = uuid(14)
 
     const buckets = await getCollectcion("buckets");
 
@@ -67,7 +69,7 @@ app.post("/buckets/:id", upload.single("object"), async (req, res) => {
         },
         {
             $push: {
-                objects: req.file
+                objects: { ...req.file, objectId }
             }
         }
     )
@@ -81,12 +83,12 @@ app.post("/buckets/:id", upload.single("object"), async (req, res) => {
     }
 
     res.json({
-        uploaded: req.file.filename
+        uploaded: objectId
     })
 })
 
 
-app.get("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
+app.get("/buckets/:id/:objId", async (req, res) => {
     const bucketId = req.params.id;
     const objId = req.params.objId;
 
@@ -106,8 +108,7 @@ app.get("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
     }
 
     const bucket = bucketList[0];
-
-    const objectToSend = bucket.objects.find(obj => obj.filename == objId)
+    const objectToSend = bucket.objects.find(obj => obj.objectId == objId)
 
     res.sendFile(
         objectToSend.path,
@@ -131,32 +132,47 @@ app.put("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
 
     const buckets = await getCollectcion("buckets");
 
+
+    // Prendo il file vecchio
     const bucketsCursor = await buckets.find(
         {
-            _id: new ObjectId(bucketId)
+            _id: new ObjectId(bucketId),
+            "objects.objectId": objId
         }
     )
 
     const bucketList = await bucketsCursor.toArray();
-
     if (bucketList.length == 0) {
-        res.status(404).json({ msg: "Buckets non esiste" })
+        res.status(404).json({ msg: "Buckets/object non trovato" })
+        fs.unlinkSync(req.file.path)
         return
     }
 
+    // Cancello il file vecchio
     const bucket = bucketList[0];
+    const filePathToRemove = bucket.objects.find(obj => obj.objectId == objId).path
+    fs.unlinkSync(filePathToRemove)
 
-    const objectToSend = bucket.objects.find(obj => obj.filename == objId)
 
-    res.sendFile(
-        objectToSend.path,
+    // Aggiorno il riferimento
+    await buckets.updateOne(
         {
-            root: ".",
-            headers: {
-                "content-type": objectToSend.mimetype
+            _id: new ObjectId(bucketId),
+            "objects.objectId": objId
+        },
+        {
+            $set: {
+                "objects.$": { ...req.file, objectId: objId }
             }
         }
     )
+
+
+    res.json({
+        modified: objId
+    })
+
+
 })
 
 
