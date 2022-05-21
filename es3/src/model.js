@@ -15,7 +15,7 @@ const { MongoClient, Collection } = require("mongodb")
 
 let client = null;
 
-const getClient = async () => {
+const getClient = async() => {
     if (client != null) {
         return client;
     }
@@ -29,13 +29,20 @@ const getClient = async () => {
  * @param {*} collection
  * @returns {Collection}
  */
-const getCollectcion = async (collection) => {
+const getCollectcion = async(collection) => {
     client = await getClient();
     return await client.db("es3").collection(collection);
 }
 
+const createBucket = async(newBucket) => {
+    const buckets = await getCollectcion("buckets");
+    newBucket.objects = []
+    newBucket.createdAt = new Date()
 
+    await buckets.insertOne(newBucket);
+};
 
 module.exports = {
-    getCollectcion
+    getCollection,
+    createBucket
 }
