@@ -1,7 +1,7 @@
 // @ts-check
 const express = require('express');
 const cors = require('cors');
-const { getCollectcion } = require('./model');
+const { getCollection, createBucket } = require('./model');
 const { ObjectId } = require('bson');
 const multer = require('multer')
 const uploadPath = 'es3/uploads/';
@@ -17,7 +17,7 @@ app.use(express.json())
 app.use(cors())
 
 
-app.post("/buckets", async (req, res) => {
+app.post("/buckets", async(req, res) => {
 
     const acceptedKeys = {
         name: true,
@@ -44,11 +44,7 @@ app.post("/buckets", async (req, res) => {
         return
     }
 
-    const buckets = await getCollectcion("buckets");
-    newBucket.objects = []
-    newBucket.createdAt = new Date()
-
-    await buckets.insertOne(newBucket);
+    await createBucket(newBucket)
 
     res.json(newBucket)
 
@@ -57,26 +53,23 @@ app.post("/buckets", async (req, res) => {
 
 
 
-app.post("/buckets/:id", upload.single("object"), async (req, res) => {
+app.post("/buckets/:id", upload.single("object"), async(req, res) => {
     const bucketId = req.params.id;
     const objectId = uuid(14)
 
     const buckets = await getCollectcion("buckets");
 
-    const { matchedCount } = await buckets.updateOne(
-        {
-            _id: new ObjectId(bucketId)
-        },
-        {
-            $push: {
-                objects: { ...req.file, objectId }
-            }
+    const { matchedCount } = await buckets.updateOne({
+        _id: new ObjectId(bucketId)
+    }, {
+        $push: {
+            objects: {...req.file, objectId }
         }
-    )
+    })
 
     if (matchedCount == 0) {
         res.status(404).json({ msg: "Buckets non esiste" })
-        // Elimino il file caricato
+            // Elimino il file caricato
         const filePath = req.file.path
         fs.unlinkSync(filePath)
         return
@@ -88,17 +81,15 @@ app.post("/buckets/:id", upload.single("object"), async (req, res) => {
 })
 
 
-app.get("/buckets/:id/:objId", async (req, res) => {
+app.get("/buckets/:id/:objId", async(req, res) => {
     const bucketId = req.params.id;
     const objId = req.params.objId;
 
     const buckets = await getCollectcion("buckets");
 
-    const bucketsCursor = await buckets.find(
-        {
-            _id: new ObjectId(bucketId)
-        }
-    )
+    const bucketsCursor = await buckets.find({
+        _id: new ObjectId(bucketId)
+    })
 
     const bucketList = await bucketsCursor.toArray();
 
@@ -111,8 +102,7 @@ app.get("/buckets/:id/:objId", async (req, res) => {
     const objectToSend = bucket.objects.find(obj => obj.objectId == objId)
 
     res.sendFile(
-        objectToSend.path,
-        {
+        objectToSend.path, {
             root: ".",
             headers: {
                 "content-type": objectToSend.mimetype
@@ -126,7 +116,7 @@ app.get("/buckets/:id/:objId", async (req, res) => {
 
 
 
-app.put("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
+app.put("/buckets/:id/:objId", upload.single("object"), async(req, res) => {
     const bucketId = req.params.id;
     const objId = req.params.objId;
 
@@ -134,12 +124,10 @@ app.put("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
 
 
     // Prendo il file vecchio
-    const bucketsCursor = await buckets.find(
-        {
-            _id: new ObjectId(bucketId),
-            "objects.objectId": objId
-        }
-    )
+    const bucketsCursor = await buckets.find({
+        _id: new ObjectId(bucketId),
+        "objects.objectId": objId
+    })
 
     const bucketList = await bucketsCursor.toArray();
     if (bucketList.length == 0) {
@@ -155,17 +143,14 @@ app.put("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
 
 
     // Aggiorno il riferimento
-    await buckets.updateOne(
-        {
-            _id: new ObjectId(bucketId),
-            "objects.objectId": objId
-        },
-        {
-            $set: {
-                "objects.$": { ...req.file, objectId: objId }
-            }
+    await buckets.updateOne({
+        _id: new ObjectId(bucketId),
+        "objects.objectId": objId
+    }, {
+        $set: {
+            "objects.$": {...req.file, objectId: objId }
         }
-    )
+    })
 
 
     res.json({
@@ -188,5 +173,3 @@ app.put("/buckets/:id/:objId", upload.single("object"), async (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
-
-
